@@ -1,16 +1,11 @@
 fn = "example.txt"
 # fn = "input.txt"
+part2 = true
 
 println()
 r = readlines(fn)[1]
 
-function firstunique(r, n)
-    for i in n:length(r)
-        if allunique(r[i-n+1:i])
-            return i
-        end
-    end
+n = part2 ? 14 : 4
+@show findfirst(1:length(r)) do i
+    i ≥ n && allunique(r[i-n+1:i])
 end
-
-@show firstunique(r, 4)
-@show firstunique(r, 14)
