@@ -14,6 +14,13 @@ function cookiedict(cookieheader)
 end
 
 export cookielogin
+
+"""
+Get the cookie header from your logged in browser session
+
+    Cookie: ...
+
+"""
 cookielogin(cookieheader) = login(cookiedict(cookieheader)["session"])
 
 export downloadinput
@@ -32,11 +39,17 @@ function downloadinput(
     @assert !isempty(get(ENV, "AOC_SESSION", ""))
 
     cookies = Dict("session" => ENV["AOC_SESSION"])
-    response = HTTP.get("https://adventofcode.com/$year/day/$day/input"; cookies)
+    url = "https://adventofcode.com/$year/day/$day/input"
+    response = HTTP.get(url; cookies, status_exception = false)
 
-    open(fn, "w") do f
-        write(f, response.body)
+    if response.status != 200
+        println(response.status, " ", url)
+        println(String(response.body))
+    else
+        open(fn, "w") do f
+            write(f, response.body)
+        end
+
+        fn
     end
-
-    fn
 end
